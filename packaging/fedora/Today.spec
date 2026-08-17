@@ -22,7 +22,7 @@ Built-in items: Eyes / Nose / Skin / Lips / Anxiety / Cognition / Weight & Fat
 %setup -q -n Today-%{version}
 
 %build
-export GOFLAGS="-mod=mod"
+export GOFLAGS="-mod=vendor"
 export CGO_ENABLED=0
 export GOOS=linux
 export GOARCH=amd64
