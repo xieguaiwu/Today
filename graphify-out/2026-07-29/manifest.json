@@ -1,0 +1,37 @@
+{
+  ".omo/run-continuation/ses_17b59a2c1ffer8u2R5FEk1466g.json": {
+    "mtime": 1780358486.8291132,
+    "ast_hash": "ecf78f0019372443ae41c7ab80a8431a",
+    "semantic_hash": "ecf78f0019372443ae41c7ab80a8431a"
+  },
+  ".omo/run-continuation/ses_17b5caa4dffeBPHxaQNL2OJdq2.json": {
+    "mtime": 1780341834.7350135,
+    "ast_hash": "6a203e86aa957ea907294cefc056a625",
+    "semantic_hash": "6a203e86aa957ea907294cefc056a625"
+  },
+  "go.mod": {
+    "mtime": 1780358344.6214106,
+    "ast_hash": "3a36b499298df9fc7537bc3a1766cc6c",
+    "semantic_hash": "3a36b499298df9fc7537bc3a1766cc6c"
+  },
+  "internal/model.go": {
+    "mtime": 1780358540.6248856,
+    "ast_hash": "e2dc2e16364f68502507355c7c4ee66b",
+    "semantic_hash": "e2dc2e16364f68502507355c7c4ee66b"
+  },
+  "main.go": {
+    "mtime": 1780358333.509657,
+    "ast_hash": "f2b91febcd56f2fccb2bb75f0292a7e5",
+    "semantic_hash": "f2b91febcd56f2fccb2bb75f0292a7e5"
+  },
+  ".omo/ralph-loop.local.md": {
+    "mtime": 1780358365.8319404,
+    "ast_hash": "991efb1952f3907b2d5f3d7f1b104155",
+    "semantic_hash": "991efb1952f3907b2d5f3d7f1b104155"
+  },
+  "internal/improvement-loop.md": {
+    "mtime": 1780343443.7854922,
+    "ast_hash": "e992a1b96933899e7f0247cf22947878",
+    "semantic_hash": "e992a1b96933899e7f0247cf22947878"
+  }
+}

@@ -1,0 +1,402 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "iterative_improvement_flow",
+        "label": "Iterative Improvement Loop Flow",
+        "nodes": [
+          "internal_improvement_loop_iterative_improvement_loop",
+          "internal_improvement_loop_review_subagent",
+          "internal_improvement_loop_fix_subagent"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.75,
+        "source_file": "internal/improvement-loop.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "github.com/xieguaiwu/Today",
+      "file_type": "code",
+      "type": "package",
+      "ecosystem": "go",
+      "source_file": "go.mod",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "github.com/xieguaiwu/today",
+      "id": "pkg_github_com_xieguaiwu_today",
+      "community_name": "Today Repository"
+    },
+    {
+      "label": "Model",
+      "file_type": "code",
+      "source_file": "internal/model.go",
+      "source_location": "L10",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": "model",
+      "id": "internal_model",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": "PersonData()",
+      "file_type": "code",
+      "source_file": "internal/model.go",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 2,
+      "norm_label": "persondata()",
+      "id": "internal_model_persondata",
+      "community_name": "Go Main Program"
+    },
+    {
+      "label": ".Init()",
+      "file_type": "code",
+      "source_file": "internal/model.go",
+      "source_location": "L26",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": ".init()",
+      "id": "internal_model_init",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": "Cmd",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": "cmd",
+      "id": "cmd",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": ".Update()",
+      "file_type": "code",
+      "source_file": "internal/model.go",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": ".update()",
+      "id": "internal_model_update",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": "Msg",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": "msg",
+      "id": "msg",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": ".View()",
+      "file_type": "code",
+      "source_file": "internal/model.go",
+      "source_location": "L57",
+      "_origin": "ast",
+      "community": 1,
+      "norm_label": ".view()",
+      "id": "internal_model_view",
+      "community_name": "MVU Architecture"
+    },
+    {
+      "label": "main.go",
+      "file_type": "code",
+      "source_file": "main.go",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "norm_label": "main.go",
+      "id": "main",
+      "community_name": "Go Main Program"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "main.go",
+      "source_location": "L12",
+      "_origin": "ast",
+      "community": 2,
+      "norm_label": "main()",
+      "id": "main_main",
+      "community_name": "Go Main Program"
+    },
+    {
+      "label": "Iterative Improvement Loop",
+      "file_type": "document",
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "iterative improvement loop",
+      "id": "internal_improvement_loop",
+      "community_name": "Iterative Improvement Loop"
+    },
+    {
+      "label": "Iterative Improvement Loop Process",
+      "file_type": "concept",
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "iterative improvement loop process",
+      "id": "internal_improvement_loop_iterative_improvement_loop",
+      "community_name": "Iterative Improvement Loop"
+    },
+    {
+      "label": "Review Subagent",
+      "file_type": "concept",
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "review subagent",
+      "id": "internal_improvement_loop_review_subagent",
+      "community_name": "Iterative Improvement Loop"
+    },
+    {
+      "label": "Fix Subagent",
+      "file_type": "concept",
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "fix subagent",
+      "id": "internal_improvement_loop_fix_subagent",
+      "community_name": "Iterative Improvement Loop"
+    },
+    {
+      "label": "Git Safety Net",
+      "file_type": "concept",
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "git safety net",
+      "id": "git_safety_net",
+      "community_name": "Iterative Improvement Loop"
+    },
+    {
+      "label": "Ralph Loop Local Config",
+      "file_type": "document",
+      "source_file": ".omo/ralph-loop.local.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "norm_label": "ralph loop local config",
+      "id": "_omo_ralph_loop_local",
+      "community_name": "Iterative Improvement Loop"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model",
+      "target": "internal_model"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model",
+      "target": "internal_model_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model",
+      "target": "internal_model_view"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "internal_model_persondata",
+      "target": "internal_model"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "internal_model_update",
+      "target": "internal_model"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "main.go",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "main_main",
+      "target": "internal_model_persondata"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L26",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model_init",
+      "target": "cmd"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L31",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model_update",
+      "target": "cmd"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/model.go",
+      "source_location": "L31",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "internal_model_update",
+      "target": "msg"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "main.go",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "main",
+      "target": "main_main"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "internal_improvement_loop",
+      "target": "git_safety_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "internal_improvement_loop",
+      "target": "internal_improvement_loop_iterative_improvement_loop"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": ".omo/ralph-loop.local.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "_omo_ralph_loop_local",
+      "target": "internal_improvement_loop_iterative_improvement_loop"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "internal_improvement_loop_iterative_improvement_loop",
+      "target": "internal_improvement_loop_fix_subagent"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/improvement-loop.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "internal_improvement_loop_iterative_improvement_loop",
+      "target": "internal_improvement_loop_review_subagent"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "iterative_improvement_flow",
+      "label": "Iterative Improvement Loop Flow",
+      "nodes": [
+        "internal_improvement_loop_iterative_improvement_loop",
+        "internal_improvement_loop_review_subagent",
+        "internal_improvement_loop_fix_subagent"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "internal/improvement-loop.md"
+    }
+  ]
+}

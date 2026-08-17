@@ -1,0 +1,16 @@
+# Binary
+/Today
+
+# Agent run-continuation scratch
+/.omo/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Go
+*.test
+*.out
