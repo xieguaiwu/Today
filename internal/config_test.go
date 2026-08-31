@@ -8,48 +8,54 @@ import (
 	"testing"
 )
 
-func TestDefaultConfigKeepsV010ItemsAndAddsMigratedHabits(t *testing.T) {
+func TestDefaultConfigIsTheFiveStreakHabits(t *testing.T) {
 	cfg := DefaultConfig()
 
-	// The five habits migrated from the source streak app lead the list, each
-	// with a colour and a group.
 	type want struct {
 		label string
+		id    string
 		color string
 		group string
+		steps int
 	}
-	migrated := []want{
-		{"anki单词", "#3B82F6", "学习"},
-		{"USACO", "#84CC16", "学习"},
-		{"无氧锻炼", "#F87171", "健身"},
-		{"PMA", "#2563EB", "学习"},
-		{"brain", "#EF4444", "健身"},
+	expected := []want{
+		{"anki单词", "anki", "#3B82F6", "学习", 5},
+		{"USACO", "usaco", "#84CC16", "学习", 3},
+		{"无氧锻炼", "anaerobic", "#F87171", "健身", 4},
+		{"PMA", "pma", "#2563EB", "学习", 2},
+		{"brain", "brain", "#EF4444", "健身", 1},
 	}
-	for i, w := range migrated {
-		if cfg.Items[i].Label != w.label {
-			t.Errorf("item %d = %q, want %q", i, cfg.Items[i].Label, w.label)
+	if len(cfg.Items) != len(expected) {
+		t.Fatalf("got %d items, want %d: %+v", len(cfg.Items), len(expected), cfg.Items)
+	}
+	for i, w := range expected {
+		it := cfg.Items[i]
+		if it.Label != w.label || it.ID != w.id {
+			t.Errorf("item %d = {%q,%q}, want {%q,%q}", i, it.Label, it.ID, w.label, w.id)
 		}
-		if cfg.Items[i].Color != w.color {
-			t.Errorf("item %q color = %q, want %q", w.label, cfg.Items[i].Color, w.color)
+		if it.Color != w.color {
+			t.Errorf("item %q color = %q, want %q", w.label, it.Color, w.color)
 		}
-		if cfg.Items[i].Group != w.group {
-			t.Errorf("item %q group = %q, want %q", w.label, cfg.Items[i].Group, w.group)
+		if it.Group != w.group {
+			t.Errorf("item %q group = %q, want %q", w.label, it.Group, w.group)
+		}
+		if it.StepsOrDefault() != w.steps {
+			t.Errorf("item %q steps = %d, want %d", w.label, it.StepsOrDefault(), w.steps)
 		}
 	}
+}
 
-	// The seven items hardcoded in v0.1.0 must still be present, so upgrading
-	// users do not silently lose their health self-check.
-	health := []string{"Eyes", "Nose", "Skin", "Lips", "Anxiety", "Cognition", "Weight & Fat"}
-	if len(cfg.Items) != len(migrated)+len(health) {
-		t.Fatalf("got %d items, want %d", len(cfg.Items), len(migrated)+len(health))
+func TestDefaultConfigDropsLegacyHealthItems(t *testing.T) {
+	// The seven v0.1.0 self-check items were removed on 2026-09-01; lock that so
+	// they cannot creep back into the shipped default.
+	gone := []string{"Eyes", "Nose", "Skin", "Lips", "Anxiety", "Cognition", "Weight & Fat"}
+	have := map[string]bool{}
+	for _, it := range DefaultConfig().Items {
+		have[it.Label] = true
 	}
-	for i, w := range health {
-		got := cfg.Items[len(migrated)+i]
-		if got.Label != w {
-			t.Errorf("health item %d = %q, want %q", i, got.Label, w)
-		}
-		if got.ID == "" {
-			t.Errorf("health item %d (%s) has no id", i, w)
+	for _, g := range gone {
+		if have[g] {
+			t.Errorf("legacy health item %q should not be in the default list", g)
 		}
 	}
 }
@@ -67,13 +73,8 @@ func TestLoadConfigCreatesFileOnFirstRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("default config was not written: %v", err)
 	}
-	if !strings.Contains(string(raw), "Weight & Fat") {
+	if !strings.Contains(string(raw), "anki单词") {
 		t.Errorf("written config missing items:\n%s", raw)
-	}
-	// Regression lock: the encoder must not HTML-escape, or hand-editing the
-	// config means reading \u0026 instead of &.
-	if strings.Contains(string(raw), "\\u0026") {
-		t.Errorf("config written with HTML escaping, not hand-editable:\n%s", raw)
 	}
 	// Second load must read the file, not regenerate it.
 	if _, err := LoadConfig(path); err != nil {
@@ -130,8 +131,23 @@ func TestRoundTripPreservesItems(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config.json")
 	cfg := DefaultConfig()
 	cfg.Items[0].Hint = "远眺 20 分钟"
+	// An ampersand in a label is exactly what HTML escaping would mangle.
+	cfg.Items = append(cfg.Items, Item{Label: "Weight & Fat"})
 	if err := WriteConfig(path, cfg); err != nil {
 		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Regression lock: the encoder must not HTML-escape, or hand-editing the
+	// config means reading \u0026 instead of &. SetEscapeHTML does not propagate
+	// into a custom MarshalJSON, so this guards a real trap.
+	if strings.Contains(string(raw), "\\u0026") {
+		t.Errorf("config written with HTML escaping, not hand-editable:\n%s", raw)
+	}
+	if !strings.Contains(string(raw), "Weight & Fat") {
+		t.Errorf("ampersand label mangled:\n%s", raw)
 	}
 	got, err := LoadConfig(path)
 	if err != nil {

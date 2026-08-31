@@ -13,12 +13,18 @@ import (
 func testModel(t *testing.T) Model {
 	t.Helper()
 	cfg := DefaultConfig()
+	// These tests exercise plain checkbox behaviour, so pin every item to one
+	// step; multi-step behaviour has its own file (steps_test.go).
+	for i := range cfg.Items {
+		cfg.Items[i].Steps = 1
+	}
 	cfg.Items[0].Hint = "远眺 20 分钟"
 	path := filepath.Join(t.TempDir(), "history.json")
 	hist, err := LoadHistory(path, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
+	hist.UseCatalog(NewCatalog(cfg.Items))
 	return New(cfg, hist)
 }
 
@@ -249,12 +255,13 @@ func TestRolloverAdoptsNewDay(t *testing.T) {
 func TestRolloverRestoresExistingRecord(t *testing.T) {
 	m := testModel(t)
 	prev := time.Now().AddDate(0, 0, -1)
-	if err := m.hist.SetChecked(prev.Format(DayLayout), []string{"eyes"}, 7); err != nil {
+	id := m.cfg.Items[0].ID
+	if err := m.hist.SetChecked(prev.Format(DayLayout), []string{id}, 7); err != nil {
 		t.Fatal(err)
 	}
 	m.rollDate(prev)
 	if m.CheckedCount() != 1 {
-		t.Errorf("should have loaded yesterday's check, got %d", m.CheckedCount())
+		t.Errorf("should have loaded yesterday's check, got %d (%+v)", m.CheckedCount(), m.progress)
 	}
 }
 

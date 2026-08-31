@@ -53,9 +53,23 @@ sudo dnf install Today
 
 ```bash
 Today            # 打开当日清单
-Today --status   # 打印今日进度后退出：2026-09-01 3/12 streak=24 total=41 partial=2
+Today --status   # 今日进度：2026-09-01 3/5 streak=24 total=24 partial=2
+Today --stats    # 每个习惯的 完成次数/当前连胜/最高连胜/最近90天持续率
 Today --reset    # 清空今日进度
 Today --version
+```
+
+`--stats` 输出示例（适合脚本对账，不依赖终端渲染）：
+
+```
+$ Today --stats
+item           done   streak   best  rate90
+全部               24       24     24     27%
+anki             24       24     24     27%
+usaco             0        0      0      0%
+anaerobic         7        5      5      8%
+pma               0        0      0      0%
+brain             8        8      8      9%
 ```
 
 按键：
@@ -83,9 +97,9 @@ Today --version
 列表里显示成进度条而不是勾选框：
 
 ```
-> ▹▹▹▸▸ 3/5 anki单词     ■■■▓░··  24🔥
+> ▹▹▹▸ 3/5 anki单词     ■■■▓░··  24🔥
   ▹▸▸ 1/3 USACO          □○·····   0🔥
-  [x] Eyes               ■□□····   3🔥
+  [x] brain               ■■□····   8🔥
 
 2 项部分完成（未计入连胜/完成次数）
 ```
@@ -112,30 +126,27 @@ Today --version
 ~/.config/Today/config.json
 ```
 
-默认配置包含 5 个习惯（从 streak App 迁移过来，带颜色/分组/步骤）加上 v0.1.0 里那 7 项健康自查：
+默认配置就是这 5 个习惯（带颜色/分组/步骤）：
 
 ```json
 {
   "title": "每日自查清单",
   "items": [
-    { "id": "anki",      "label": "anki单词", "color": "#3B82F6", "group": "学习", "steps": 5 },
-    { "id": "usaco",     "label": "USACO",    "color": "#84CC16", "group": "学习", "steps": 3 },
-    { "id": "anaerobic", "label": "无氧锻炼", "color": "#F87171", "group": "健身", "steps": 4 },
-    { "id": "pma",       "label": "PMA",      "color": "#2563EB", "group": "学习", "steps": 2 },
-    { "id": "brain",     "label": "brain",    "color": "#EF4444", "group": "健身" },
-    { "id": "eyes",      "label": "Eyes" },
-    { "id": "nose",      "label": "Nose" },
-    { "id": "skin",      "label": "Skin" },
-    { "id": "lips",      "label": "Lips" },
-    { "id": "anxiety",   "label": "Anxiety" },
-    { "id": "cognition", "label": "Cognition" },
-    { "id": "weight-fat", "label": "Weight & Fat" }
+    { "id": "anki",      "label": "anki单词", "hint": "Anki 新词 + 复习", "color": "#3B82F6", "group": "学习", "steps": 5 },
+    { "id": "usaco",     "label": "USACO",    "hint": "算法训练/比赛题", "color": "#84CC16", "group": "学习", "steps": 3 },
+    { "id": "anaerobic", "label": "无氧锻炼", "hint": "力量训练",       "color": "#F87171", "group": "健身", "steps": 4 },
+    { "id": "pma",       "label": "PMA",      "hint": "数学/物理额外练习", "color": "#2563EB", "group": "学习", "steps": 2 },
+    { "id": "brain",     "label": "brain",    "hint": "专注力/冥想训练", "color": "#EF4444", "group": "健身" }
   ],
   "history_days": 365
 }
 ```
 
 步骤数只是预设，按自己实际情况改 `steps` 即可；不需要多步的删掉这个字段就是普通勾选框。
+
+> v0.1.0 那 7 项健康自查（Eyes / Nose / Skin / Lips / Anxiety / Cognition / Weight & Fat）
+> 已于 v0.3.1 从默认清单移除。想留着就在 `items` 里自己加回去 —— 历史数据不会丢，
+> 只要 `id` 写对（例如 `weight-fat`）。
 
 ### 两种写法
 
@@ -162,6 +173,9 @@ Today --version
 | `items[].color` | 可选。`#RGB` / `#RRGGBB`，用于周格、热力图、条目名。省略则从内置色板取色 |
 | `items[].group` | 可选。分类标签（如「健身」「学习」），目前仅作元数据 |
 | `history_days` | 历史保留天数，默认 365 |
+
+> 「全部」的完成次数按**去重天数**算（与它自己的热力图亮格数一致），
+> 不是各习惯次数相加。
 
 **关于 `id`**：历史是按 `id` 记的。省略 `id` 时它由 `label` 推导，所以**改了 label 等于换了一项**，那一项的历史会重新开始。想改名又不丢历史，就显式写死 `id`。
 

@@ -80,23 +80,19 @@ type Config struct {
 	HistoryDays int `json:"history_days,omitempty"`
 }
 
-// DefaultConfig is what gets written on first run. It leads with the five
-// habits migrated from the source streak app, then keeps the seven health
-// self-check items that were hardcoded in v0.1.0.
+// DefaultConfig is what gets written on first run: the five habits tracked in
+// the streak app. The seven health self-check items that v0.1.0 hardcoded were
+// dropped on 2026-09-01; add them back in the config if you still want them.
 func DefaultConfig() Config {
 	items := []Item{
-		{Label: "anki单词", Hint: "Anki 新词 + 复习", Color: "#3B82F6", Group: "学习"},
-		{Label: "USACO", Hint: "算法训练/比赛题", Color: "#84CC16", Group: "学习"},
-		{Label: "无氧锻炼", Hint: "力量训练", Color: "#F87171", Group: "健身"},
-		{Label: "PMA", Hint: "数学/物理额外练习", Color: "#2563EB", Group: "学习"},
-		{Label: "brain", Hint: "专注力/冥想训练", Color: "#EF4444", Group: "健身"},
-		{Label: "Eyes"},
-		{Label: "Nose"},
-		{Label: "Skin"},
-		{Label: "Lips"},
-		{Label: "Anxiety"},
-		{Label: "Cognition"},
-		{Label: "Weight & Fat"},
+		{ID: "anki", Label: "anki单词", Hint: "Anki 新词 + 复习", Color: "#3B82F6", Group: "学习", Steps: 5},
+		{ID: "usaco", Label: "USACO", Hint: "算法训练/比赛题", Color: "#84CC16", Group: "学习", Steps: 3},
+		// 无氧锻炼 has no ASCII slug, so its id must be stated explicitly --
+		// otherwise it degrades to a positional "item3" and history keyed by
+		// "anaerobic" would not resolve to it.
+		{ID: "anaerobic", Label: "无氧锻炼", Hint: "力量训练", Color: "#F87171", Group: "健身", Steps: 4},
+		{ID: "pma", Label: "PMA", Hint: "数学/物理额外练习", Color: "#2563EB", Group: "学习", Steps: 2},
+		{ID: "brain", Label: "brain", Hint: "专注力/冥想训练", Color: "#EF4444", Group: "健身"},
 	}
 	return Config{Title: DefaultTitle, Items: normalizeItems(items), HistoryDays: DefaultRetentionDays}
 }

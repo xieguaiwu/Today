@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           Today
-Version:        0.3.0
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        Terminal daily self-check checklist (bubbletea TUI)
 
@@ -55,6 +55,13 @@ install -Dm644 README.md %{buildroot}%{_defaultdocdir}/%{name}/README.md
 %{_bindir}/Today
 
 %changelog
+* Tue Sep 01 2026 xgw <xieguaiwu@163.com> - 0.3.1-1
+- Default list is now the five tracked habits; the seven v0.1.0 health self-check
+  items were dropped (add them back in the config if wanted, history is keyed by id)
+- Give the default habits explicit ids and step counts, so history keys are stable
+  even for labels with no ASCII slug (\u65e0\u6c27\u953b\u70bc -> anaerobic)
+- Added --stats: per-habit completions, current streak, best streak, 90-day rate
+
 * Tue Sep 01 2026 xgw <xieguaiwu@163.com> - 0.3.0-1
 - Steps: habits can require N sub-steps ("steps" in config); Space advances one
   step, f fills, +/- nudge. Partial progress is shaded in the heatmap but does
