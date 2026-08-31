@@ -12,7 +12,7 @@ import (
 )
 
 // Version is the human-readable release of this build.
-const Version = "0.2.0"
+const Version = "0.3.0"
 
 func main() {
 	var (
@@ -51,6 +51,9 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
+	// Statistics need each item's step count to tell "fully done" from "partly
+	// done", so hand the catalog over before anything reads the history.
+	hist.UseCatalog(internal.NewCatalog(cfg.Items))
 	if hist.Notice != "" {
 		fmt.Fprintf(os.Stderr, "Today: %s\n", hist.Notice)
 	}
@@ -67,8 +70,16 @@ func main() {
 
 	if statusMode {
 		done := len(hist.CheckedSet(today))
-		fmt.Printf("%s %d/%d streak=%d total=%d\n",
-			today, done, len(cfg.Items), hist.Streak(time.Now()), hist.CheckedCount())
+		partial := 0
+		for _, it := range cfg.Items {
+			v := hist.StepsOn(today, it.ID)
+			if v > 0 && v < it.StepsOrDefault() {
+				partial++
+			}
+		}
+		fmt.Printf("%s %d/%d streak=%d total=%d partial=%d\n",
+			today, done, len(cfg.Items), hist.ItemStreak(internal.AllItems, time.Now()),
+			hist.CheckedCount(), partial)
 		return
 	}
 

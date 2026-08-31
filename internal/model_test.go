@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -42,8 +43,8 @@ func TestNewBindsToday(t *testing.T) {
 	if m.date != time.Now().Format(DayLayout) {
 		t.Errorf("date = %q, want today", m.date)
 	}
-	if len(m.checked) != 0 {
-		t.Errorf("fresh model should have nothing checked, got %v", m.checked)
+	if len(m.progress) != 0 {
+		t.Errorf("fresh model should have nothing checked, got %v", m.progress)
 	}
 	if m.Init() == nil {
 		t.Error("Init should return the rollover ticker command")
@@ -187,8 +188,8 @@ func TestViewHasNoTutorialLeftovers(t *testing.T) {
 	if !strings.Contains(v, m.date) {
 		t.Errorf("View missing the date:\n%s", v)
 	}
-	if !strings.Contains(v, "0/7") {
-		t.Errorf("View missing progress counter:\n%s", v)
+	if want := fmt.Sprintf("0/%d", len(m.cfg.Items)); !strings.Contains(v, want) {
+		t.Errorf("View missing progress counter %q:\n%s", want, v)
 	}
 	for _, it := range m.cfg.Items {
 		if !strings.Contains(v, it.Label) {
@@ -270,13 +271,13 @@ func TestTickMsgTriggersRolloverAndReschedules(t *testing.T) {
 	}
 }
 
-func TestToggleOutOfRangeIsIgnored(t *testing.T) {
+func TestStepOutOfRangeIsIgnored(t *testing.T) {
 	m := testModel(t)
 	m = send(t, m, down())
 	m.cursor = len(m.cfg.Items) // deliberately invalid
 	before := m.hist.CheckedCount()
-	m.toggle(m.cursor)
+	m.step(m.cursor)
 	if m.hist.CheckedCount() != before {
-		t.Error("out-of-range toggle must be a no-op")
+		t.Error("out-of-range step must be a no-op")
 	}
 }

@@ -6,9 +6,10 @@
 ## 特性
 
 - 纯终端 TUI，开箱即用（首次运行自动生成配置文件）
-- 清单可自定义：项目、标题、每项提示语都写在 JSON 里，改完即生效
-- 按日期持久化：跨天自动重置，`Ctrl-C` 或关掉终端都不会丢当日的勾选
-- 连续打卡天数 + 累计打卡天数
+- 清单可自定义：项目、标题、提示语、**步骤数**都写在 JSON 里，改完即生效
+- **多步习惯**：一个习惯可以拆成几步，部分完成用深浅格子区分（参考 streak App 的分级语义）
+- 按日期持久化：跨天自动重置，`Ctrl-C` 或关掉终端都不会丢当日的进度
+- 统计视图：当前连胜 / 最高连胜 / 完成次数 / 最近 90 天持续率 + 年度打卡热力图 + 星期分布
 - 非交互模式 `--status`，可接 shell 提示符 / waybar 状态栏
 - 零第三方依赖之外的东西：只依赖 [charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea)
 
@@ -52,8 +53,8 @@ sudo dnf install Today
 
 ```bash
 Today            # 打开当日清单
-Today --status   # 打印今日进度后退出，例：2026-08-31 3/7 streak=5 total=42
-Today --reset    # 清空今日勾选
+Today --status   # 打印今日进度后退出：2026-09-01 3/12 streak=24 total=41 partial=2
+Today --reset    # 清空今日进度
 Today --version
 ```
 
@@ -62,9 +63,46 @@ Today --version
 | 键 | 作用 |
 |---|---|
 | `↑` `↓` / `k` `j` | 移动光标 |
-| `空格` / `enter` / `x` | 勾选 / 取消（立即写盘） |
-| `r` | 清空当日全部勾选 |
+| `空格` / `enter` / `x` | **完成一步**（单步习惯就是勾选/取消；已满再按回到 0） |
+| `f` | 直接拉满 / 清零 |
+| `+` `-` | 加一步 / 减一步 |
+| `r` | 清空当日全部进度 |
+| `Tab` / `Esc` | 列表 ↔ 统计 |
+| `←` `→` / `h` `l` | 统计页：切换条目 |
+| `↑` `↓` / `j` `k` | 统计页：切换年份 |
 | `q` / `Ctrl-C` | 退出 |
+
+## 步骤（多步习惯）
+
+有些习惯不是「做没做」而是「做了几步」。给条目加 `steps` 就能表达：
+
+```json
+{ "id": "anki", "label": "anki单词", "steps": 5, "color": "#3B82F6", "group": "学习" }
+```
+
+列表里显示成进度条而不是勾选框：
+
+```
+> ▹▹▹▸▸ 3/5 anki单词     ■■■▓░··  24🔥
+  ▹▸▸ 1/3 USACO          □○·····   0🔥
+  [x] Eyes               ■□□····   3🔥
+
+2 项部分完成（未计入连胜/完成次数）
+```
+
+**口径（重要）**：
+
+| 概念 | 定义 |
+|---|---|
+| 完整完成 | 步数达到 `steps` —— **只有这个计入连胜、完成次数、热力图亮格** |
+| 部分完成 | `0 < 步数 < steps` —— 热力图按比率降档显示，**不计入任何统计** |
+
+这样「打了卡但只做了一半」不会虚增连胜，和源 App 的分级语义一致。
+
+热力图/周格的灰度：`■` 满 · `▓` 约 3/4 · `▒` 约 1/2 · `░` 少量 · `□` 没做 · `·` 未来 · `◉`/`○` 今天。
+即使终端不支持颜色，这些字符本身也能区分档位。
+
+`steps` 省略或写 1 就是普通勾选框，**老配置完全不受影响**。上限 12。
 
 ## 配置
 
@@ -74,23 +112,30 @@ Today --version
 ~/.config/Today/config.json
 ```
 
-默认内容就是 v0.1.0 里写死的那 7 项：
+默认配置包含 5 个习惯（从 streak App 迁移过来，带颜色/分组/步骤）加上 v0.1.0 里那 7 项健康自查：
 
 ```json
 {
   "title": "每日自查清单",
   "items": [
-    { "id": "eyes", "label": "Eyes" },
-    { "id": "nose", "label": "Nose" },
-    { "id": "skin", "label": "Skin" },
-    { "id": "lips", "label": "Lips" },
-    { "id": "anxiety", "label": "Anxiety" },
+    { "id": "anki",      "label": "anki单词", "color": "#3B82F6", "group": "学习", "steps": 5 },
+    { "id": "usaco",     "label": "USACO",    "color": "#84CC16", "group": "学习", "steps": 3 },
+    { "id": "anaerobic", "label": "无氧锻炼", "color": "#F87171", "group": "健身", "steps": 4 },
+    { "id": "pma",       "label": "PMA",      "color": "#2563EB", "group": "学习", "steps": 2 },
+    { "id": "brain",     "label": "brain",    "color": "#EF4444", "group": "健身" },
+    { "id": "eyes",      "label": "Eyes" },
+    { "id": "nose",      "label": "Nose" },
+    { "id": "skin",      "label": "Skin" },
+    { "id": "lips",      "label": "Lips" },
+    { "id": "anxiety",   "label": "Anxiety" },
     { "id": "cognition", "label": "Cognition" },
     { "id": "weight-fat", "label": "Weight & Fat" }
   ],
   "history_days": 365
 }
 ```
+
+步骤数只是预设，按自己实际情况改 `steps` 即可；不需要多步的删掉这个字段就是普通勾选框。
 
 ### 两种写法
 
@@ -102,7 +147,7 @@ Today --version
   "items": [
     "喝水",
     { "label": "Floss", "hint": "牙线 30 秒" },
-    { "id": "meditate", "label": "Meditate", "hint": "10 分钟" }
+    { "id": "meditate", "label": "Meditate", "hint": "10 分钟", "steps": 3 }
   ]
 }
 ```
@@ -113,6 +158,9 @@ Today --version
 | `items[].id` | 历史记录用的稳定键。省略时由 `label` 生成（`Weight & Fat` → `weight-fat`）；纯中文标签会退化成 `item1` 这类位置编号 |
 | `items[].label` | 显示文字，必填（空白项会被忽略） |
 | `items[].hint` | 可选。光标停在该项时以暗色显示在下一行 |
+| `items[].steps` | 可选。完成该习惯需要几步，默认 1（=普通勾选框），上限 12 |
+| `items[].color` | 可选。`#RGB` / `#RRGGBB`，用于周格、热力图、条目名。省略则从内置色板取色 |
+| `items[].group` | 可选。分类标签（如「健身」「学习」），目前仅作元数据 |
 | `history_days` | 历史保留天数，默认 365 |
 
 **关于 `id`**：历史是按 `id` 记的。省略 `id` 时它由 `label` 推导，所以**改了 label 等于换了一项**，那一项的历史会重新开始。想改名又不丢历史，就显式写死 `id`。
@@ -141,16 +189,20 @@ Today --version
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "days": {
-    "2026-08-31": { "checked": ["eyes", "nose"], "total": 7, "updated_at": "..." }
+    "2026-09-01": { "progress": { "anki": 5, "usaco": 1 }, "total": 12, "updated_at": "..." }
   }
 }
 ```
 
+`progress` 记的是**每个条目当天完成了几步**。v1 格式（`"checked": ["anki", ...]`）仍然可读，
+按「该条目满步」解释，所以升级不会丢历史。
+
 - **本地日期**分天（不是 UTC），过零点自动换新的一天；终端一直开着也会在 30 秒内察觉日期变化
 - 写入是**原子**的（同目录临时文件 + rename），掉电/强杀不会留下半截文件
 - 文件损坏时会被挪到 `history.json.corrupt-<时间戳>` 并重新开工，不会每次运行都报错
+- 单个时间戳写坏不会毁掉整份记录（时间戳按可缺省字段解析）
 - 全部数据只存本机，无任何网络请求
 
 ## 故障排查
@@ -192,7 +244,7 @@ cat ~/.local/share/Today/history.json
 ## 开发
 
 ```bash
-go test ./...          # 43 个单测，覆盖配置解析 / 持久化 / TUI 状态机
+go test ./...          # 87 个单测：配置解析 / 持久化 / 步骤与统计口径 / TUI 状态机 / 渲染降级
 go vet ./...
 gofmt -l .             # 应为空
 ```

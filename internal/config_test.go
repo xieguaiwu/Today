@@ -8,18 +8,48 @@ import (
 	"testing"
 )
 
-func TestDefaultConfigKeepsV010Items(t *testing.T) {
+func TestDefaultConfigKeepsV010ItemsAndAddsMigratedHabits(t *testing.T) {
 	cfg := DefaultConfig()
-	if len(cfg.Items) != 7 {
-		t.Fatalf("expected the original 7 items, got %d", len(cfg.Items))
+
+	// The five habits migrated from the source streak app lead the list, each
+	// with a colour and a group.
+	type want struct {
+		label string
+		color string
+		group string
 	}
-	want := []string{"Eyes", "Nose", "Skin", "Lips", "Anxiety", "Cognition", "Weight & Fat"}
-	for i, w := range want {
-		if cfg.Items[i].Label != w {
-			t.Errorf("item %d = %q, want %q", i, cfg.Items[i].Label, w)
+	migrated := []want{
+		{"anki单词", "#3B82F6", "学习"},
+		{"USACO", "#84CC16", "学习"},
+		{"无氧锻炼", "#F87171", "健身"},
+		{"PMA", "#2563EB", "学习"},
+		{"brain", "#EF4444", "健身"},
+	}
+	for i, w := range migrated {
+		if cfg.Items[i].Label != w.label {
+			t.Errorf("item %d = %q, want %q", i, cfg.Items[i].Label, w.label)
 		}
-		if cfg.Items[i].ID == "" {
-			t.Errorf("item %d (%s) has no id", i, w)
+		if cfg.Items[i].Color != w.color {
+			t.Errorf("item %q color = %q, want %q", w.label, cfg.Items[i].Color, w.color)
+		}
+		if cfg.Items[i].Group != w.group {
+			t.Errorf("item %q group = %q, want %q", w.label, cfg.Items[i].Group, w.group)
+		}
+	}
+
+	// The seven items hardcoded in v0.1.0 must still be present, so upgrading
+	// users do not silently lose their health self-check.
+	health := []string{"Eyes", "Nose", "Skin", "Lips", "Anxiety", "Cognition", "Weight & Fat"}
+	if len(cfg.Items) != len(migrated)+len(health) {
+		t.Fatalf("got %d items, want %d", len(cfg.Items), len(migrated)+len(health))
+	}
+	for i, w := range health {
+		got := cfg.Items[len(migrated)+i]
+		if got.Label != w {
+			t.Errorf("health item %d = %q, want %q", i, got.Label, w)
+		}
+		if got.ID == "" {
+			t.Errorf("health item %d (%s) has no id", i, w)
 		}
 	}
 }
@@ -30,8 +60,8 @@ func TestLoadConfigCreatesFileOnFirstRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadConfig: %v", err)
 	}
-	if len(cfg.Items) != 7 {
-		t.Fatalf("got %d items, want 7", len(cfg.Items))
+	if len(cfg.Items) != len(DefaultConfig().Items) {
+		t.Fatalf("got %d items, want %d", len(cfg.Items), len(DefaultConfig().Items))
 	}
 	raw, err := os.ReadFile(path)
 	if err != nil {
