@@ -4,6 +4,15 @@
 # Agent run-continuation scratch
 /.omo/
 
+# Local tooling output — regenerable, not part of the app
+/graphify-out/
+
+# Agent skill draft that was committed by accident; kept locally, not shipped
+/docs/improvement-loop.md
+
+# Release packaging output
+/dist/
+
 # IDE / OS
 .idea/
 .vscode/
