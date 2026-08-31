@@ -39,6 +39,17 @@ tar xzf Today-*-linux-amd64.tar.gz
 install -Dm755 Today-*/Today ~/.local/bin/Today
 ```
 
+### 方式二-b：本地构建 RPM（无 root 也能装到家目录）
+
+```bash
+git clone https://github.com/xieguaiwu/Today.git && cd Today
+dnf builddep -y packaging/fedora/Today.spec   # 或直接 dnf install golang
+rpmbuild -ba packaging/fedora/Today.spec
+sudo dnf install ~/rpmbuild/RPMS/x86_64/Today-*.rpm
+```
+
+产物是零运行时依赖的静态二进制（`CGO_ENABLED=0`），所以 RPM 在任何 x86_64 Fedora 上都能装。
+
 ### 方式三：COPR（Fedora）
 
 ```bash
@@ -46,8 +57,15 @@ sudo dnf copr enable xieguaiwu/Today
 sudo dnf install Today
 ```
 
-> ⚠️ 当前 COPR 只构建了 **Fedora 43 / 44 / 45** 三个 chroot。若你在 Fedora 42 或更早版本，
-> `dnf copr enable` 之后仓库里没有匹配的 release，`dnf install Today` 会找不到包——请改用上面两种方式。
+> ⚠️ **当前 COPR 只提供 Fedora 43 / 44 / 45**。
+>
+> 而且这不是「没构建」而是「没地方构建」：COPR 上游**不存在 `fedora-42-x86_64` 这个 chroot**
+> （全部 204 个 chroot 里 `fedora-42` 只剩 riscv64），服务端会直接报
+> `chroots: 'fedora-42-x86_64' is not a valid choice`。所以 F42 及更早版本**无法**通过 COPR 安装，
+> `dnf copr enable` 后仓库里没有匹配的 release，`dnf install Today` 找不到包。
+>
+> Fedora 42 本身仍在支持期（`updates-released-f42` 可访问），只是 COPR 不再为它提供构建环境。
+> F42 用户请用下面两种方式之一。
 
 ## 使用
 
@@ -271,7 +289,8 @@ TERM=dumb Today
 
 - 语言：Go 1.24+（`go.mod` 已放宽以兼容 COPR 的 golang 版本）
 - 依赖：`charmbracelet/bubbletea`，`vendor/` 已入库
-- 打包：`packaging/fedora/Today.spec`
+- 打包：`packaging/fedora/Today.spec`（`rpmbuild -ba` 可直接出 SRPM + RPM）
+- COPR：`xieguaiwu/Today`，chroot `fedora-{43,44,45}-x86_64`；提交方式 `copr-cli build xieguaiwu/Today <srpm>`
 
 ## 许可证
 
